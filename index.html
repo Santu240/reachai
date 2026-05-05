@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ReachAI — AI-Powered Outreach That Gets Replies</title>
+  <meta name="description" content="Generate personalized cold emails, LinkedIn DMs and WhatsApp messages in seconds. Powered by AI. Works in English and Bahasa Malaysia." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #0f0e0c;
+      --paper: #faf9f6;
+      --accent: #c8522a;
+      --accent2: #1a4fd6;
+      --muted: #6b6860;
+      --border: rgba(15,14,12,0.12);
+      --card: #ffffff;
+      --success: #16a34a;
+      --serif: 'DM Serif Display', Georgia, serif;
+      --sans: 'DM Sans', system-ui, sans-serif;
+      --radius: 10px;
+      --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--paper);
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.65;
+      overflow-x: hidden;
+    }
+
+    /* ── UTILS ── */
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+    .serif { font-family: var(--serif); }
+    .accent { color: var(--accent); }
+    .accent2 { color: var(--accent2); }
+    .hidden { display: none !important; }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(250,249,246,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+    }
+    .nav-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 60px;
+    }
+    .logo { font-family: var(--serif); font-size: 22px; color: var(--ink); text-decoration: none; }
+    .logo span { color: var(--accent); }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.15s; }
+    .nav-links a:hover { color: var(--ink); }
+    .nav-cta {
+      background: var(--ink); color: #fff !important;
+      padding: 8px 20px; border-radius: 8px; font-size: 13px !important;
+      transition: opacity 0.15s !important;
+    }
+    .nav-cta:hover { opacity: 0.85; }
+    .nav-mobile-btn { display: none; background: none; border: none; cursor: pointer; color: var(--ink); font-size: 22px; }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 100px 24px 80px;
+      text-align: center;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 20px; padding: 5px 14px;
+      font-size: 12px; font-weight: 500; color: var(--muted);
+      margin-bottom: 28px;
+      box-shadow: var(--shadow);
+    }
+    .hero-badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); }
+    .hero h1 {
+      font-family: var(--serif);
+      font-size: clamp(38px, 6vw, 62px);
+      line-height: 1.1;
+      letter-spacing: -1px;
+      margin-bottom: 22px;
+      color: var(--ink);
+    }
+    .hero h1 em { font-style: italic; color: var(--accent); }
+    .hero p {
+      font-size: 18px; color: var(--muted);
+      max-width: 560px; margin: 0 auto 36px;
+      line-height: 1.7;
+    }
+    .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--accent); color: #fff;
+      padding: 14px 30px; border-radius: var(--radius);
+      font-size: 15px; font-weight: 500;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-primary:hover { opacity: 0.88; }
+    .btn-primary:active { transform: scale(0.98); }
+    .btn-secondary {
+      background: transparent; color: var(--ink);
+      padding: 14px 30px; border-radius: var(--radius);
+      font-size: 15px; font-weight: 500;
+      border: 1px solid var(--border); cursor: pointer;
+      text-decoration: none;
+      transition: background 0.15s;
+      display: inline-flex; align-items: center; gap: 8px;
+    }
+    .btn-secondary:hover { background: rgba(0,0,0,0.04); }
+
+    .hero-social-proof {
+      margin-top: 48px;
+      display: flex; align-items: center; justify-content: center;
+      gap: 16px; flex-wrap: wrap;
+      font-size: 13px; color: var(--muted);
+    }
+    .avatars { display: flex; }
+    .avatars span {
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 2px solid var(--paper);
+      background: var(--accent2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; color: #fff; font-weight: 600;
+      margin-left: -8px;
+    }
+    .avatars span:first-child { margin-left: 0; }
+    .avatars span:nth-child(2) { background: var(--accent); }
+    .avatars span:nth-child(3) { background: #0ea5e9; }
+    .avatars span:nth-child(4) { background: #16a34a; }
+    .stars { color: #f59e0b; letter-spacing: -1px; }
+
+    /* ── LOGOS ── */
+    .logos-bar {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 20px 24px;
+      text-align: center;
+    }
+    .logos-bar p { font-size: 12px; color: var(--muted); margin-bottom: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.8px; }
+    .logos-list { display: flex; align-items: center; justify-content: center; gap: 36px; flex-wrap: wrap; }
+    .logos-list span { font-family: var(--serif); font-size: 17px; color: #ccc; }
+
+    /* ── SECTION TITLES ── */
+    .section { padding: 80px 24px; }
+    .section-label {
+      font-size: 11px; font-weight: 600; letter-spacing: 1.2px;
+      text-transform: uppercase; color: var(--accent);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-family: var(--serif);
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.15;
+      letter-spacing: -0.5px;
+      margin-bottom: 16px;
+    }
+    .section-sub { font-size: 17px; color: var(--muted); max-width: 520px; line-height: 1.7; }
+    .text-center { text-align: center; }
+    .text-center .section-sub { margin: 0 auto; }
+
+    /* ── HOW IT WORKS ── */
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 24px;
+      margin-top: 52px;
+    }
+    .step-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px 24px;
+      box-shadow: var(--shadow);
+    }
+    .step-num {
+      width: 36px; height: 36px; border-radius: 10px;
+      background: var(--ink); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 600; margin-bottom: 16px;
+    }
+    .step-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+    .step-card p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+
+    /* ── FEATURES ── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+      margin-top: 52px;
+    }
+    .feature-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+    .feature-icon {
+      font-size: 24px; margin-bottom: 14px;
+      width: 48px; height: 48px;
+      background: var(--paper); border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      border: 1px solid var(--border);
+    }
+    .feature-card h3 { font-size: 15px; font-weight: 600; margin-bottom: 6px; }
+    .feature-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+    /* ── APP SECTION ── */
+    .app-section { background: var(--ink); padding: 80px 24px; }
+    .app-section .section-title { color: #fff; }
+    .app-section .section-sub { color: rgba(255,255,255,0.5); }
+    .app-section .section-label { color: var(--accent); }
+
+    .app-wrapper {
+      background: var(--paper);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.3);
+      margin-top: 48px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .app-topbar {
+      background: #1a1917;
+      padding: 12px 20px;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .app-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+    /* ── APP INTERFACE ── */
+    .app-layout { display: grid; grid-template-columns: 1fr 1fr; min-height: 580px; }
+    @media(max-width: 700px) { .app-layout { grid-template-columns: 1fr; } }
+
+    .app-left {
+      padding: 28px 24px;
+      border-right: 1px solid var(--border);
+      display: flex; flex-direction: column; gap: 18px;
+    }
+    .app-right {
+      padding: 28px 24px;
+      background: #f5f4f0;
+      display: flex; flex-direction: column; gap: 16px;
+    }
+
+    .field-label {
+      font-size: 11px; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.7px;
+      color: var(--muted); margin-bottom: 6px;
+    }
+    .tabs-row { display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .tab-btn {
+      flex: 1; padding: 8px 4px; text-align: center;
+      font-size: 12px; font-weight: 500; cursor: pointer;
+      color: var(--muted); background: transparent; border: none;
+      transition: all 0.15s; font-family: var(--sans);
+    }
+    .tab-btn.active { background: var(--ink); color: #fff; }
+
+    .app-input {
+      width: 100%; font-family: var(--sans); font-size: 13px;
+      color: var(--ink); background: var(--card);
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 10px 12px; outline: none; resize: none;
+      transition: border-color 0.15s;
+    }
+    .app-input:focus { border-color: var(--accent); }
+
+    .tone-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tone-pill {
+      font-size: 11px; font-weight: 500;
+      padding: 5px 12px; border-radius: 20px;
+      border: 1px solid var(--border); cursor: pointer;
+      background: transparent; color: var(--muted);
+      transition: all 0.15s; font-family: var(--sans);
+    }
+    .tone-pill.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+    .lang-pills { display: flex; gap: 6px; }
+    .lang-pill {
+      flex: 1; font-size: 12px; font-weight: 500;
+      padding: 7px; border-radius: 8px; text-align: center;
+      border: 1px solid var(--border); cursor: pointer;
+      background: transparent; color: var(--muted);
+      transition: all 0.15s; font-family: var(--sans);
+    }
+    .lang-pill.active { background: var(--accent2); color: #fff; border-color: var(--accent2); }
+
+    .gen-btn {
+      width: 100%; padding: 13px; background: var(--accent);
+      color: #fff; border: none; border-radius: 8px;
+      font-family: var(--sans); font-size: 14px; font-weight: 600;
+      cursor: pointer; display: flex; align-items: center;
+      justify-content: center; gap: 8px;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .gen-btn:hover { opacity: 0.9; }
+    .gen-btn:active { transform: scale(0.99); }
+    .gen-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    /* Output */
+    .out-header { display: flex; align-items: center; justify-content: space-between; }
+    .out-title { font-family: var(--serif); font-size: 17px; }
+    .variant-tabs { display: flex; gap: 5px; }
+    .var-btn {
+      font-size: 11px; font-weight: 500;
+      padding: 4px 11px; border-radius: 20px;
+      border: 1px solid var(--border); cursor: pointer;
+      background: transparent; color: var(--muted);
+      transition: all 0.15s; font-family: var(--sans);
+    }
+    .var-btn.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+    .stats-bar { display: flex; gap: 8px; }
+    .stat-chip {
+      flex: 1; background: var(--card);
+      border: 1px solid var(--border); border-radius: 8px;
+      padding: 9px 10px; text-align: center;
+    }
+    .stat-val { font-family: var(--serif); font-size: 18px; color: var(--accent); display: block; }
+    .stat-lbl { font-size: 10px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .output-box {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 20px;
+      flex: 1; min-height: 200px; position: relative;
+    }
+    .output-placeholder {
+      color: var(--muted); font-size: 13px;
+      text-align: center; padding: 36px 16px; line-height: 1.8;
+    }
+    .output-placeholder .big { font-family: var(--serif); font-size: 36px; color: #ddd; display: block; margin-bottom: 8px; }
+    .output-subject {
+      font-size: 12px; font-weight: 600; color: var(--muted);
+      margin-bottom: 10px; padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .output-text { font-size: 13px; line-height: 1.8; color: var(--ink); white-space: pre-wrap; word-break: break-word; }
+
+    .loading-dots {
+      display: none; align-items: center; justify-content: center;
+      gap: 10px; padding: 40px; color: var(--muted); font-size: 13px;
+    }
+    .loading-dots.show { display: flex; }
+    .ldot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent); animation: ldot 1.2s ease-in-out infinite;
+    }
+    .ldot:nth-child(2) { animation-delay: 0.2s; }
+    .ldot:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes ldot { 0%,100%{opacity:0.3;transform:scale(0.8)} 50%{opacity:1;transform:scale(1.1)} }
+
+    .action-row { display: flex; gap: 8px; }
+    .act-btn {
+      flex: 1; padding: 9px; font-family: var(--sans);
+      font-size: 12px; font-weight: 500; border-radius: 8px;
+      border: 1px solid var(--border); cursor: pointer;
+      background: var(--card); color: var(--ink);
+      transition: all 0.15s;
+    }
+    .act-btn:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .act-btn.primary { background: var(--accent2); color: #fff; border-color: var(--accent2); }
+    .act-btn.primary:hover { opacity: 0.85; background: var(--accent2); }
+
+    .copied-toast {
+      position: absolute; top: 12px; right: 12px;
+      font-size: 11px; background: var(--success); color: #fff;
+      padding: 4px 12px; border-radius: 20px;
+      opacity: 0; transition: opacity 0.3s; pointer-events: none;
+    }
+    .copied-toast.show { opacity: 1; }
+    .char-hint { font-size: 11px; color: var(--muted); text-align: right; margin-top: 3px; }
+
+    /* ── PRICING ── */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 20px; margin-top: 52px;
+      align-items: start;
+    }
+    .pricing-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 16px; padding: 28px 24px;
+      box-shadow: var(--shadow); position: relative;
+    }
+    .pricing-card.featured {
+      border: 2px solid var(--accent2);
+      transform: scale(1.02);
+    }
+    .popular-badge {
+      position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+      background: var(--accent2); color: #fff;
+      font-size: 11px; font-weight: 600; padding: 4px 14px; border-radius: 20px;
+    }
+    .plan-name { font-size: 13px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; }
+    .plan-price { font-family: var(--serif); font-size: 46px; line-height: 1; margin-bottom: 4px; }
+    .plan-price sup { font-size: 22px; vertical-align: super; }
+    .plan-period { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+    .plan-desc { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.6; }
+    .plan-features { list-style: none; margin-bottom: 24px; display: flex; flex-direction: column; gap: 10px; }
+    .plan-features li { font-size: 13px; display: flex; align-items: flex-start; gap: 8px; }
+    .plan-features li::before { content: '✓'; color: var(--success); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+    .plan-features li.no::before { content: '✕'; color: #ddd; }
+    .plan-btn {
+      width: 100%; padding: 12px; border-radius: 8px;
+      font-family: var(--sans); font-size: 14px; font-weight: 600;
+      cursor: pointer; border: 1px solid var(--border);
+      background: transparent; color: var(--ink);
+      transition: all 0.15s;
+    }
+    .plan-btn:hover { background: var(--ink); color: #fff; border-color: var(--ink); }
+    .plan-btn.featured-btn { background: var(--accent2); color: #fff; border-color: var(--accent2); }
+    .plan-btn.featured-btn:hover { opacity: 0.88; }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px; margin-top: 52px;
+    }
+    .testi-card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 14px; padding: 22px;
+      box-shadow: var(--shadow);
+    }
+    .testi-stars { color: #f59e0b; font-size: 13px; margin-bottom: 12px; }
+    .testi-text { font-size: 14px; line-height: 1.7; color: var(--ink); margin-bottom: 16px; font-style: italic; }
+    .testi-author { display: flex; align-items: center; gap: 10px; }
+    .testi-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px; font-weight: 600; color: #fff;
+    }
+    .testi-name { font-size: 13px; font-weight: 600; }
+    .testi-role { font-size: 12px; color: var(--muted); }
+
+    /* ── FAQ ── */
+    .faq-list { max-width: 680px; margin: 48px auto 0; }
+    .faq-item { border-bottom: 1px solid var(--border); }
+    .faq-q {
+      width: 100%; text-align: left; padding: 18px 0;
+      font-size: 15px; font-weight: 500; cursor: pointer;
+      background: none; border: none; color: var(--ink);
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 12px; font-family: var(--sans);
+    }
+    .faq-q .arrow { color: var(--muted); transition: transform 0.2s; font-size: 18px; }
+    .faq-q.open .arrow { transform: rotate(45deg); }
+    .faq-a { font-size: 14px; color: var(--muted); line-height: 1.7; padding-bottom: 18px; display: none; }
+    .faq-a.open { display: block; }
+
+    /* ── CTA SECTION ── */
+    .cta-section {
+      background: var(--ink); text-align: center;
+      padding: 80px 24px;
+    }
+    .cta-section h2 { font-family: var(--serif); font-size: clamp(28px, 4vw, 44px); color: #fff; margin-bottom: 16px; }
+    .cta-section p { font-size: 17px; color: rgba(255,255,255,0.5); margin-bottom: 36px; }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 40px 24px;
+      border-top: 1px solid var(--border);
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 16px;
+    }
+    .footer-logo { font-family: var(--serif); font-size: 18px; }
+    .footer-logo span { color: var(--accent); }
+    .footer-links { display: flex; gap: 20px; flex-wrap: wrap; }
+    .footer-links a { font-size: 13px; color: var(--muted); text-decoration: none; }
+    .footer-links a:hover { color: var(--ink); }
+    .footer-copy { font-size: 12px; color: var(--muted); }
+
+    /* ── MODALS ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.5);
+      align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--card); border-radius: 16px;
+      padding: 36px; width: 100%; max-width: 420px;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.2);
+      position: relative;
+    }
+    .modal-close {
+      position: absolute; top: 16px; right: 16px;
+      background: none; border: none; font-size: 20px;
+      cursor: pointer; color: var(--muted);
+    }
+    .modal h2 { font-family: var(--serif); font-size: 26px; margin-bottom: 6px; }
+    .modal p { font-size: 13px; color: var(--muted); margin-bottom: 24px; }
+    .form-group { margin-bottom: 14px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--muted); margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .form-input {
+      width: 100%; padding: 10px 12px;
+      border: 1px solid var(--border); border-radius: 8px;
+      font-family: var(--sans); font-size: 14px; color: var(--ink);
+      background: var(--paper); outline: none;
+      transition: border-color 0.15s;
+    }
+    .form-input:focus { border-color: var(--accent2); }
+    .form-btn {
+      width: 100%; padding: 13px;
+      background: var(--accent2); color: #fff;
+      border: none; border-radius: 8px;
+      font-family: var(--sans); font-size: 14px; font-weight: 600;
+      cursor: pointer; margin-top: 6px;
+      transition: opacity 0.15s;
+    }
+    .form-btn:hover { opacity: 0.88; }
+    .form-divider { text-align: center; font-size: 12px; color: var(--muted); margin: 14px 0; }
+    .modal-switch { font-size: 13px; color: var(--muted); text-align: center; margin-top: 16px; }
+    .modal-switch a { color: var(--accent2); cursor: pointer; }
+
+    /* ── DASHBOARD ── */
+    #dashboard-view {
+      display: none; min-height: 100vh; padding: 32px 24px;
+      max-width: 1100px; margin: 0 auto;
+    }
+    .dash-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; flex-wrap: wrap; gap: 12px; }
+    .dash-title { font-family: var(--serif); font-size: 28px; }
+    .dash-user { display: flex; align-items: center; gap: 10px; }
+    .user-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--accent2); display: flex; align-items: center;
+      justify-content: center; font-size: 13px; font-weight: 700; color: #fff;
+    }
+    .user-plan { font-size: 12px; font-weight: 600; background: var(--paper); border: 1px solid var(--border); border-radius: 20px; padding: 3px 10px; color: var(--muted); }
+    .logout-btn { font-size: 13px; color: var(--muted); cursor: pointer; background: none; border: none; font-family: var(--sans); }
+
+    .dash-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-bottom: 28px; }
+    .dash-stat {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 12px; padding: 16px 18px; box-shadow: var(--shadow);
+    }
+    .dash-stat-val { font-family: var(--serif); font-size: 30px; color: var(--accent); }
+    .dash-stat-lbl { font-size: 12px; color: var(--muted); font-weight: 500; }
+
+    .usage-bar-wrap { margin-top: 6px; }
+    .usage-bar-bg { height: 4px; background: var(--border); border-radius: 4px; margin-top: 4px; }
+    .usage-bar-fill { height: 4px; background: var(--accent2); border-radius: 4px; transition: width 0.4s; }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-mobile-btn { display: block; }
+      .hero { padding: 60px 24px 50px; }
+      .pricing-card.featured { transform: none; }
+      .app-layout { grid-template-columns: 1fr; }
+      .app-left { border-right: none; border-bottom: 1px solid var(--border); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <div class="nav-inner">
+    <a href="#" class="logo" onclick="showLanding()">Reach<span>AI</span></a>
+    <div class="nav-links">
+      <a href="#how-it-works">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#" onclick="openModal('login')">Log in</a>
+      <a href="#" class="nav-cta" onclick="openModal('signup')">Start free →</a>
+    </div>
+    <button class="nav-mobile-btn" onclick="openModal('signup')">→ Start free</button>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  LANDING PAGE                                   -->
+<!-- ═══════════════════════════════════════════════ -->
+<div id="landing-view">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-badge">
+      <div class="dot"></div>
+      Live · Powered by Claude AI
+    </div>
+    <h1>Outreach messages that<br/><em>actually get replies</em></h1>
+    <p>Generate hyper-personalized cold emails, LinkedIn DMs and WhatsApp messages in seconds. Works in English and Bahasa Malaysia.</p>
+    <div class="hero-btns">
+      <a href="#" class="btn-primary" onclick="openModal('signup')">✦ Try free — no credit card</a>
+      <a href="#app-demo" class="btn-secondary">See it in action ↓</a>
+    </div>
+    <div class="hero-social-proof">
+      <div class="avatars">
+        <span>AM</span><span>SL</span><span>RK</span><span>JW</span>
+      </div>
+      <span><span class="stars">★★★★★</span> Loved by 400+ founders &amp; agencies</span>
+    </div>
+  </section>
+
+  <!-- LOGO BAR -->
+  <div class="logos-bar">
+    <p>Trusted by teams from</p>
+    <div class="logos-list">
+      <span>DigitalEdge</span>
+      <span>CreativeKL</span>
+      <span>ProspectFlow</span>
+      <span>AgencyHub</span>
+      <span>ReachBase</span>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <section class="section" id="how-it-works">
+    <div class="container">
+      <div class="text-center">
+        <div class="section-label">Simple process</div>
+        <div class="section-title">From idea to sent message<br/>in under 60 seconds</div>
+        <p class="section-sub">No copywriting skills needed. Just fill in 3 fields and ReachAI does the rest.</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-num">1</div>
+          <h3>Describe your target</h3>
+          <p>Enter the company name, person's role, and a bit about what they do. The more specific, the better your message.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">2</div>
+          <h3>Tell us your offer</h3>
+          <p>Describe what you're offering and what problem you solve. ReachAI turns this into a compelling hook.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">3</div>
+          <h3>Pick your style</h3>
+          <p>Choose tone (professional, friendly, bold), channel (email, LinkedIn, WhatsApp) and language (English or BM).</p>
+        </div>
+        <div class="step-card">
+          <div class="step-num">4</div>
+          <h3>Copy &amp; send</h3>
+          <p>Get 3 variations instantly. Pick the best one, copy it, and send. Track replies and generate follow-ups too.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="section" id="features" style="background:#f5f4f0; padding: 80px 24px;">
+    <div class="container">
+      <div class="text-center">
+        <div class="section-label">Features</div>
+        <div class="section-title">Everything you need to<br/>land more meetings</div>
+      </div>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">✉️</div>
+          <h3>Cold Email Generator</h3>
+          <p>Personalized subject lines and email bodies that avoid spam filters and feel human-written.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💼</div>
+          <h3>LinkedIn DM Writer</h3>
+          <p>Short, punchy LinkedIn messages with the right hook to get connection requests accepted and replied to.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">💬</div>
+          <h3>WhatsApp Messages</h3>
+          <p>Conversational WhatsApp outreach that feels warm and local — perfect for the Malaysian market.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🇲🇾</div>
+          <h3>Bahasa Malaysia Support</h3>
+          <p>Write outreach in BM, English, or both. Reach local Malaysian SMEs and agencies in their preferred language.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔁</div>
+          <h3>Follow-up Generator</h3>
+          <p>No reply? Generate a polite, non-annoying follow-up sequence automatically based on your original message.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>Reply Score</h3>
+          <p>Every message gets a reply-likelihood score based on length, clarity, CTA strength, and personalization level.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APP DEMO -->
+  <section class="app-section" id="app-demo">
+    <div class="container">
+      <div class="text-center">
+        <div class="section-label">Live demo</div>
+        <div class="section-title">Try it right now — free</div>
+        <p class="section-sub">No signup needed for the demo. See real AI-generated outreach in action.</p>
+      </div>
+      <div class="app-wrapper">
+        <div class="app-topbar">
+          <div class="app-dot" style="background:#ff5f57"></div>
+          <div class="app-dot" style="background:#febc2e"></div>
+          <div class="app-dot" style="background:#28c840"></div>
+          <span style="color:rgba(255,255,255,0.3); font-size:12px; margin-left:8px;">reachai.app — Message Generator</span>
+        </div>
+        <!-- APP INTERFACE -->
+        <div class="app-layout">
+          <div class="app-left">
+            <div>
+              <div style="font-family:var(--serif); font-size:19px; margin-bottom:4px;">Generate your message</div>
+              <div style="font-size:12px; color:var(--muted);">Fill in the fields below and hit Generate</div>
+            </div>
+            <div>
+              <div class="field-label">Channel</div>
+              <div class="tabs-row">
+                <button class="tab-btn active" onclick="setTab(this,'email')">Cold Email</button>
+                <button class="tab-btn" onclick="setTab(this,'linkedin')">LinkedIn DM</button>
+                <button class="tab-btn" onclick="setTab(this,'whatsapp')">WhatsApp</button>
+              </div>
+            </div>
+            <div>
+              <div class="field-label">Your name &amp; role</div>
+              <input class="app-input" id="inp-sender" type="text" placeholder="e.g. Ahmad, founder of MarketingPro KL" />
+            </div>
+            <div>
+              <div class="field-label">Target company / person</div>
+              <input class="app-input" id="inp-target" type="text" placeholder="e.g. Sarah Lee, CEO of Creative Studio KL" />
+            </div>
+            <div>
+              <div class="field-label">Your offer (what you solve)</div>
+              <textarea class="app-input" id="inp-offer" rows="3" placeholder="e.g. We help agencies automate client reporting with AI, saving 5+ hours per week..." oninput="updateCharCount(this)"></textarea>
+              <div class="char-hint" id="char-hint">0 / 300</div>
+            </div>
+            <div>
+              <div class="field-label">Tone</div>
+              <div class="tone-pills">
+                <button class="tone-pill active" onclick="setTone(this,'Professional')">Professional</button>
+                <button class="tone-pill" onclick="setTone(this,'Friendly')">Friendly</button>
+                <button class="tone-pill" onclick="setTone(this,'Bold & Direct')">Bold &amp; Direct</button>
+                <button class="tone-pill" onclick="setTone(this,'Humble')">Humble</button>
+              </div>
+            </div>
+            <div>
+              <div class="field-label">Language</div>
+              <div class="lang-pills">
+                <button class="lang-pill active" onclick="setLang(this,'English')">🇬🇧 English</button>
+                <button class="lang-pill" onclick="setLang(this,'Bahasa Malaysia')">🇲🇾 Bahasa Malaysia</button>
+                <button class="lang-pill" onclick="setLang(this,'Both')">Both</button>
+              </div>
+            </div>
+            <button class="gen-btn" id="gen-btn" onclick="generateMsg()">✦ Generate Message</button>
+          </div>
+
+          <div class="app-right">
+            <div class="out-header">
+              <div class="out-title">Your message</div>
+              <div class="variant-tabs">
+                <button class="var-btn active" onclick="pickVariant(this,0)">V1</button>
+                <button class="var-btn" onclick="pickVariant(this,1)">V2</button>
+                <button class="var-btn" onclick="pickVariant(this,2)">V3</button>
+              </div>
+            </div>
+            <div class="stats-bar">
+              <div class="stat-chip"><span class="stat-val" id="stat-words">—</span><span class="stat-lbl">Words</span></div>
+              <div class="stat-chip"><span class="stat-val" id="stat-read">—</span><span class="stat-lbl">Read time</span></div>
+              <div class="stat-chip"><span class="stat-val" id="stat-score">—</span><span class="stat-lbl">Reply score</span></div>
+            </div>
+            <div class="output-box" id="out-box">
+              <div class="output-placeholder" id="out-placeholder">
+                <span class="big">✦</span>
+                Fill in your details on the left<br>and click Generate
+              </div>
+              <div class="loading-dots" id="out-loading">
+                <div class="ldot"></div><div class="ldot"></div><div class="ldot"></div>
+                <span>Writing your message...</span>
+              </div>
+              <div id="out-subject" class="output-subject" style="display:none"></div>
+              <div class="output-text" id="out-text" style="display:none"></div>
+              <span class="copied-toast" id="copied-toast">Copied!</span>
+            </div>
+            <div class="action-row">
+              <button class="act-btn" onclick="copyMsg()">📋 Copy</button>
+              <button class="act-btn" onclick="generateMsg()">↻ Regenerate</button>
+              <button class="act-btn primary" onclick="openModal('signup')">Unlock follow-ups →</button>
+            </div>
+            <div style="font-size:11px;color:var(--muted);text-align:center;padding-top:2px;">
+              Demo · Sign up for unlimited messages + follow-ups
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section">
+    <div class="container">
+      <div class="text-center">
+        <div class="section-label">Testimonials</div>
+        <div class="section-title">Founders &amp; agencies love it</div>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-text">"I used to spend 30 minutes crafting one cold email. ReachAI does it in 10 seconds and the quality is honestly better than what I wrote manually."</p>
+          <div class="testi-author">
+            <div class="testi-avatar" style="background:#1a4fd6;">AM</div>
+            <div><div class="testi-name">Ahmad Mustafa</div><div class="testi-role">Founder, DigitalEdge Agency, KL</div></div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-text">"The Bahasa Malaysia option is a game changer. My reply rate went from 4% to 18% when I started messaging local SMEs in BM. Nothing else does this."</p>
+          <div class="testi-author">
+            <div class="testi-avatar" style="background:#c8522a;">SL</div>
+            <div><div class="testi-name">Sarah Lim</div><div class="testi-role">BD Manager, CreativeStudio KL</div></div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-text">"We run outreach campaigns for 12 clients. ReachAI cut our copywriting time by 70%. The ROI is insane for a $29/month tool."</p>
+          <div class="testi-author">
+            <div class="testi-avatar" style="background:#0ea5e9;">RK</div>
+            <div><div class="testi-name">Raj Kumar</div><div class="testi-role">CEO, ProspectFlow Agency</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="section" id="pricing" style="background:#f5f4f0; padding: 80px 24px;">
+    <div class="container">
+      <div class="text-center">
+        <div class="section-label">Pricing</div>
+        <div class="section-title">Simple, transparent pricing</div>
+        <p class="section-sub">Start free. Upgrade when you're ready. No contracts, cancel anytime.</p>
+      </div>
+      <div class="pricing-grid">
+        <!-- STARTER -->
+        <div class="pricing-card">
+          <div class="plan-name">Starter</div>
+          <div class="plan-price"><sup>$</sup>9</div>
+          <div class="plan-period">per month</div>
+          <div class="plan-desc">Perfect for solo founders and freelancers testing outreach.</div>
+          <ul class="plan-features">
+            <li>50 messages per month</li>
+            <li>Cold email + LinkedIn DM</li>
+            <li>3 variants per generation</li>
+            <li>English language</li>
+            <li class="no">WhatsApp messages</li>
+            <li class="no">Bahasa Malaysia</li>
+            <li class="no">Follow-up generator</li>
+          </ul>
+          <button class="plan-btn" onclick="openModal('signup')">Get started →</button>
+        </div>
+        <!-- PRO -->
+        <div class="pricing-card featured">
+          <div class="popular-badge">Most popular</div>
+          <div class="plan-name">Pro</div>
+          <div class="plan-price"><sup>$</sup>29</div>
+          <div class="plan-period">per month</div>
+          <div class="plan-desc">For agencies and sales teams running serious outreach campaigns.</div>
+          <ul class="plan-features">
+            <li>Unlimited messages</li>
+            <li>All 3 channels (email, LinkedIn, WhatsApp)</li>
+            <li>3 variants per generation</li>
+            <li>English + Bahasa Malaysia</li>
+            <li>Follow-up generator</li>
+            <li>Reply score analytics</li>
+            <li class="no">Team seats</li>
+          </ul>
+          <button class="plan-btn featured-btn" onclick="openModal('signup')">Start Pro free →</button>
+        </div>
+        <!-- AGENCY -->
+        <div class="pricing-card">
+          <div class="plan-name">Agency</div>
+          <div class="plan-price"><sup>$</sup>79</div>
+          <div class="plan-period">per month</div>
+          <div class="plan-desc">For agencies managing outreach for multiple clients.</div>
+          <ul class="plan-features">
+            <li>Unlimited messages</li>
+            <li>All 3 channels</li>
+            <li>3 variants per generation</li>
+            <li>English + Bahasa Malaysia</li>
+            <li>Follow-up generator</li>
+            <li>Reply score analytics</li>
+            <li>5 team seats included</li>
+          </ul>
+          <button class="plan-btn" onclick="openModal('signup')">Get Agency plan →</button>
+        </div>
+      </div>
+      <p style="text-align:center; margin-top:28px; font-size:13px; color:var(--muted);">
+        All plans include a 7-day free trial · No credit card required to start
+      </p>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section">
+    <div class="container">
+      <div class="text-center">
+        <div class="section-label">FAQ</div>
+        <div class="section-title">Questions? We've got answers</div>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">Do I need any copywriting experience? <span class="arrow">+</span></button>
+          <div class="faq-a">No. Just fill in 3 simple fields — who you are, who you're targeting, and what you're offering. ReachAI handles the rest. If you can describe your business in a sentence, you can use this tool.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">How is this different from ChatGPT? <span class="arrow">+</span></button>
+          <div class="faq-a">ChatGPT is a general tool — you'd need to craft the right prompts, specify the format, tone, and channel yourself every time. ReachAI is purpose-built for outreach: it knows the right structure for cold emails vs LinkedIn DMs vs WhatsApp, generates 3 variants automatically, and scores each one for reply likelihood.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">Does it really work in Bahasa Malaysia? <span class="arrow">+</span></button>
+          <div class="faq-a">Yes — properly, not just Google Translate. The BM output is natural, professional, and culturally appropriate for Malaysian business contexts. You can also choose "Both" to get an English version and a BM version side by side.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">Can I cancel anytime? <span class="arrow">+</span></button>
+          <div class="faq-a">Yes. No contracts, no lock-in. Cancel from your dashboard in one click. You'll keep access until the end of your billing period.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">What AI model powers ReachAI? <span class="arrow">+</span></button>
+          <div class="faq-a">ReachAI is powered by Claude by Anthropic — one of the most capable AI models available, known for producing natural, human-sounding text rather than robotic AI-sounding output.</div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q" onclick="toggleFaq(this)">Is there a free trial? <span class="arrow">+</span></button>
+          <div class="faq-a">Yes — you can try the demo above without signing up at all. When you create an account, every paid plan includes a 7-day free trial with no credit card required.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-section">
+    <div class="container">
+      <h2>Start sending smarter outreach today</h2>
+      <p>Join 400+ founders and agencies already using ReachAI</p>
+      <a href="#" class="btn-primary" onclick="openModal('signup')" style="display:inline-flex;">✦ Try free — no credit card needed</a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-logo">Reach<span>AI</span></div>
+      <div class="footer-links">
+        <a href="#how-it-works">How it works</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#" onclick="openModal('login')">Log in</a>
+        <a href="mailto:hello@reachai.app">Contact</a>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+      </div>
+      <div class="footer-copy">© 2025 ReachAI · Built with Claude AI</div>
+    </div>
+  </footer>
+
+</div><!-- /landing-view -->
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  DASHBOARD (shown after login)                  -->
+<!-- ═══════════════════════════════════════════════ -->
+<div id="dashboard-view">
+  <div class="dash-header">
+    <div class="dash-title">Welcome back 👋</div>
+    <div class="dash-user">
+      <div class="user-avatar" id="dash-avatar">U</div>
+      <div>
+        <div style="font-size:14px; font-weight:600;" id="dash-name">User</div>
+        <div class="user-plan" id="dash-plan">Pro Plan</div>
+      </div>
+      <button class="logout-btn" onclick="logout()">Log out</button>
+    </div>
+  </div>
+
+  <div class="dash-stats">
+    <div class="dash-stat">
+      <div class="dash-stat-val" id="d-generated">0</div>
+      <div class="dash-stat-lbl">Messages generated</div>
+    </div>
+    <div class="dash-stat">
+      <div class="dash-stat-val" id="d-remaining">∞</div>
+      <div class="dash-stat-lbl">Remaining this month</div>
+    </div>
+    <div class="dash-stat">
+      <div class="dash-stat-val">3</div>
+      <div class="dash-stat-lbl">Channels available</div>
+    </div>
+    <div class="dash-stat">
+      <div class="dash-stat-val">2</div>
+      <div class="dash-stat-lbl">Languages</div>
+    </div>
+  </div>
+
+  <div style="background:var(--card); border:1px solid var(--border); border-radius:16px; overflow:hidden; box-shadow:var(--shadow);">
+    <div style="padding:16px 20px; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between;">
+      <div style="font-family:var(--serif); font-size:18px;">Message Generator</div>
+      <span style="font-size:11px; background:var(--paper); border:1px solid var(--border); border-radius:20px; padding:3px 10px; color:var(--muted);">Pro — Unlimited</span>
+    </div>
+    <div class="app-layout">
+      <div class="app-left">
+        <div>
+          <div class="field-label">Channel</div>
+          <div class="tabs-row">
+            <button class="tab-btn active" onclick="setTab(this,'email')">Cold Email</button>
+            <button class="tab-btn" onclick="setTab(this,'linkedin')">LinkedIn DM</button>
+            <button class="tab-btn" onclick="setTab(this,'whatsapp')">WhatsApp</button>
+          </div>
+        </div>
+        <div>
+          <div class="field-label">Your name &amp; role</div>
+          <input class="app-input" id="d-sender" type="text" placeholder="e.g. Ahmad, founder of MarketingPro KL" />
+        </div>
+        <div>
+          <div class="field-label">Target company / person</div>
+          <input class="app-input" id="d-target" type="text" placeholder="e.g. Sarah Lee, CEO of Creative Studio KL" />
+        </div>
+        <div>
+          <div class="field-label">Your offer</div>
+          <textarea class="app-input" id="d-offer" rows="3" placeholder="We help agencies automate client reporting with AI..." oninput="updateCharCount(this)"></textarea>
+          <div class="char-hint">0 / 300</div>
+        </div>
+        <div>
+          <div class="field-label">Tone</div>
+          <div class="tone-pills">
+            <button class="tone-pill active" onclick="setTone(this,'Professional')">Professional</button>
+            <button class="tone-pill" onclick="setTone(this,'Friendly')">Friendly</button>
+            <button class="tone-pill" onclick="setTone(this,'Bold & Direct')">Bold &amp; Direct</button>
+            <button class="tone-pill" onclick="setTone(this,'Humble')">Humble</button>
+          </div>
+        </div>
+        <div>
+          <div class="field-label">Language</div>
+          <div class="lang-pills">
+            <button class="lang-pill active" onclick="setLang(this,'English')">🇬🇧 English</button>
+            <button class="lang-pill" onclick="setLang(this,'Bahasa Malaysia')">🇲🇾 BM</button>
+            <button class="lang-pill" onclick="setLang(this,'Both')">Both</button>
+          </div>
+        </div>
+        <button class="gen-btn" id="d-gen-btn" onclick="generateMsg(true)">✦ Generate Message</button>
+      </div>
+      <div class="app-right">
+        <div class="out-header">
+          <div class="out-title">Your message</div>
+          <div class="variant-tabs">
+            <button class="var-btn active" onclick="pickVariant(this,0)">V1</button>
+            <button class="var-btn" onclick="pickVariant(this,1)">V2</button>
+            <button class="var-btn" onclick="pickVariant(this,2)">V3</button>
+          </div>
+        </div>
+        <div class="stats-bar">
+          <div class="stat-chip"><span class="stat-val" id="d-stat-words">—</span><span class="stat-lbl">Words</span></div>
+          <div class="stat-chip"><span class="stat-val" id="d-stat-read">—</span><span class="stat-lbl">Read time</span></div>
+          <div class="stat-chip"><span class="stat-val" id="d-stat-score">—</span><span class="stat-lbl">Reply score</span></div>
+        </div>
+        <div class="output-box" id="d-out-box">
+          <div class="output-placeholder" id="d-out-placeholder">
+            <span class="big">✦</span>
+            Fill in your details and click Generate
+          </div>
+          <div class="loading-dots" id="d-out-loading">
+            <div class="ldot"></div><div class="ldot"></div><div class="ldot"></div>
+            <span>Writing your message...</span>
+          </div>
+          <div id="d-out-subject" class="output-subject" style="display:none"></div>
+          <div class="output-text" id="d-out-text" style="display:none"></div>
+          <span class="copied-toast" id="d-copied-toast">Copied!</span>
+        </div>
+        <div class="action-row">
+          <button class="act-btn" onclick="copyMsg(true)">📋 Copy</button>
+          <button class="act-btn" onclick="generateMsg(true)">↻ Regenerate</button>
+          <button class="act-btn primary" onclick="generateFollowUp()">Generate follow-up →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:24px; background:var(--card); border:1px solid var(--border); border-radius:16px; padding:22px 24px; box-shadow:var(--shadow);">
+    <div style="font-family:var(--serif); font-size:17px; margin-bottom:14px;">Your plan</div>
+    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+      <div>
+        <div style="font-size:15px; font-weight:600;" id="plan-display">Pro — $29/month</div>
+        <div style="font-size:13px; color:var(--muted);">Unlimited messages · All channels · English + BM</div>
+      </div>
+      <button class="btn-primary" style="font-size:13px; padding:9px 18px;" onclick="alert('Stripe billing portal — connect your Stripe account to enable this.')">Manage billing →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!--  MODALS                                         -->
+<!-- ═══════════════════════════════════════════════ -->
+
+<!-- SIGNUP MODAL -->
+<div class="modal-overlay" id="signup-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('signup')">✕</button>
+    <h2>Create your account</h2>
+    <p>Start your 7-day free trial · No credit card needed</p>
+    <div class="form-group">
+      <label>Full name</label>
+      <input class="form-input" id="su-name" type="text" placeholder="Ahmad bin Malik" />
+    </div>
+    <div class="form-group">
+      <label>Email address</label>
+      <input class="form-input" id="su-email" type="email" placeholder="ahmad@agency.com" />
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input class="form-input" id="su-pass" type="password" placeholder="Min 8 characters" />
+    </div>
+    <button class="form-btn" onclick="handleSignup()">Create account →</button>
+    <div class="form-divider">or</div>
+    <div class="modal-switch">Already have an account? <a onclick="switchModal('signup','login')">Log in here</a></div>
+  </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div class="modal-overlay" id="login-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('login')">✕</button>
+    <h2>Welcome back</h2>
+    <p>Log in to your ReachAI account</p>
+    <div class="form-group">
+      <label>Email address</label>
+      <input class="form-input" id="li-email" type="email" placeholder="ahmad@agency.com" />
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input class="form-input" id="li-pass" type="password" placeholder="Your password" />
+    </div>
+    <button class="form-btn" onclick="handleLogin()">Log in →</button>
+    <div class="modal-switch">Don't have an account? <a onclick="switchModal('login','signup')">Sign up free</a></div>
+  </div>
+</div>
+
+<script>
+// ── STATE ──
+let appType = 'email';
+let appTone = 'Professional';
+let appLang = 'English';
+let variants = ['', '', ''];
+let currentVariant = 0;
+let isDashboard = false;
+let generatedCount = 0;
+
+// ── NAV / VIEW ──
+function showLanding() {
+  document.getElementById('landing-view').style.display = '';
+  document.getElementById('dashboard-view').style.display = 'none';
+}
+function showDashboard(name, plan) {
+  document.getElementById('landing-view').style.display = 'none';
+  document.getElementById('dashboard-view').style.display = 'block';
+  document.getElementById('dash-name').textContent = name;
+  document.getElementById('dash-avatar').textContent = name.charAt(0).toUpperCase();
+  document.getElementById('d-generated').textContent = generatedCount;
+  window.scrollTo(0, 0);
+}
+function logout() {
+  showLanding();
+}
+
+// ── MODALS ──
+function openModal(type) {
+  document.getElementById(type + '-modal').classList.add('open');
+}
+function closeModal(type) {
+  document.getElementById(type + '-modal').classList.remove('open');
+}
+function switchModal(from, to) {
+  closeModal(from);
+  setTimeout(() => openModal(to), 150);
+}
+document.querySelectorAll('.modal-overlay').forEach(el => {
+  el.addEventListener('click', function(e) {
+    if (e.target === this) this.classList.remove('open');
+  });
+});
+
+// ── AUTH ──
+function handleSignup() {
+  const name = document.getElementById('su-name').value.trim();
+  const email = document.getElementById('su-email').value.trim();
+  const pass = document.getElementById('su-pass').value;
+  if (!name || !email || pass.length < 8) {
+    alert('Please fill in all fields. Password must be at least 8 characters.');
+    return;
+  }
+  closeModal('signup');
+  showDashboard(name, 'Pro');
+}
+function handleLogin() {
+  const email = document.getElementById('li-email').value.trim();
+  const pass = document.getElementById('li-pass').value;
+  if (!email || !pass) { alert('Please enter your email and password.'); return; }
+  closeModal('login');
+  const name = email.split('@')[0];
+  showDashboard(name.charAt(0).toUpperCase() + name.slice(1), 'Pro');
+}
+
+// ── APP CONTROLS ──
+function setTab(el, type) {
+  el.closest('.tabs-row').querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  appType = type;
+}
+function setTone(el, tone) {
+  el.closest('.tone-pills').querySelectorAll('.tone-pill').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  appTone = tone;
+}
+function setLang(el, lang) {
+  el.closest('.lang-pills').querySelectorAll('.lang-pill').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  appLang = lang;
+}
+function pickVariant(el, idx) {
+  el.closest('.variant-tabs').querySelectorAll('.var-btn').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  currentVariant = idx;
+  if (variants[idx]) renderOutput(variants[idx], isDashboard);
+}
+function updateCharCount(el) {
+  const hint = el.parentElement.querySelector('.char-hint');
+  if (hint) hint.textContent = el.value.length + ' / 300';
+}
+
+// ── GENERATE ──
+async function generateMsg(dash = false) {
+  isDashboard = dash;
+  const prefix = dash ? 'd-' : '';
+  const sender = document.getElementById(dash ? 'd-sender' : 'inp-sender').value.trim();
+  const target = document.getElementById(dash ? 'd-target' : 'inp-target').value.trim();
+  const offer  = document.getElementById(dash ? 'd-offer'  : 'inp-offer').value.trim();
+
+  if (!sender || !target || !offer) {
+    alert('Please fill in all three fields before generating.');
+    return;
+  }
+
+  // UI: loading state
+  document.getElementById(prefix + 'out-placeholder').style.display = 'none';
+  document.getElementById(prefix + 'out-loading').classList.add('show');
+  document.getElementById(prefix + 'out-text').style.display = 'none';
+  document.getElementById(prefix + 'out-subject').style.display = 'none';
+  const genBtn = document.getElementById(dash ? 'd-gen-btn' : 'gen-btn');
+  genBtn.disabled = true;
+
+  const typeLabel = appType === 'email' ? 'cold email' : appType === 'linkedin' ? 'LinkedIn DM' : 'WhatsApp message';
+  const langNote = appLang === 'Both'
+    ? '(Version 1 in English, Version 2 in Bahasa Malaysia, Version 3 mix of both)'
+    : `in ${appLang}`;
+
+  const prompt = `Write 3 distinct variations of a ${typeLabel} outreach message ${langNote}.
+
+Sender: ${sender}
+Target: ${target}  
+Offer: ${offer}
+Tone: ${appTone}
+
+Rules:
+- Keep each message concise and natural — under 120 words
+- Focus on value and curiosity, not features
+- End with ONE clear, low-pressure call to action
+- ${appType === 'email' ? 'Include a compelling subject line for each labeled exactly as "Subject: [line]"' : 'No subject line needed'}
+- Make each variation meaningfully different in approach
+
+Format strictly as:
+VERSION 1:
+[message]
+
+VERSION 2:
+[message]
+
+VERSION 3:
+[message]`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.[0]?.text || '';
+    const parts = text.split(/VERSION \d+:/i).filter(p => p.trim());
+    variants = [
+      (parts[0] || '').trim(),
+      (parts[1] || '').trim(),
+      (parts[2] || '').trim()
+    ];
+    generatedCount++;
+    if (dash) document.getElementById('d-generated').textContent = generatedCount;
+
+    // Reset to V1
+    document.querySelectorAll('.var-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
+    currentVariant = 0;
+    renderOutput(variants[0], dash);
+
+  } catch (e) {
+    document.getElementById(prefix + 'out-loading').classList.remove('show');
+    document.getElementById(prefix + 'out-text').style.display = 'block';
+    document.getElementById(prefix + 'out-text').textContent = 'Something went wrong. Please try again.';
+  }
+
+  genBtn.disabled = false;
+}
+
+function renderOutput(text, dash = false) {
+  const prefix = dash ? 'd-' : '';
+  document.getElementById(prefix + 'out-loading').classList.remove('show');
+  document.getElementById(prefix + 'out-placeholder').style.display = 'none';
+
+  const subjectMatch = text.match(/Subject:\s*(.+)/i);
+  const subjectEl = document.getElementById(prefix + 'out-subject');
+  const textEl = document.getElementById(prefix + 'out-text');
+
+  if (subjectMatch && appType === 'email') {
+    subjectEl.textContent = '📧 Subject: ' + subjectMatch[1].trim();
+    subjectEl.style.display = 'block';
+    text = text.replace(/Subject:\s*.+\n?/i, '').trim();
+  } else {
+    subjectEl.style.display = 'none';
+  }
+
+  textEl.textContent = text;
+  textEl.style.display = 'block';
+
+  const words = text.split(/\s+/).filter(Boolean).length;
+  const readSec = Math.ceil(words / 3);
+  const score = words < 100 ? '8.4' : words < 150 ? '7.2' : '5.9';
+  document.getElementById(prefix.length ? 'd-stat-words' : 'stat-words').textContent = words;
+  document.getElementById(prefix.length ? 'd-stat-read'  : 'stat-read').textContent  = readSec + 's';
+  document.getElementById(prefix.length ? 'd-stat-score' : 'stat-score').textContent = score + '/10';
+}
+
+function copyMsg(dash = false) {
+  const prefix = dash ? 'd-' : '';
+  const text = document.getElementById(prefix + 'out-text').textContent;
+  if (!text) return;
+  navigator.clipboard.writeText(text).then(() => {
+    const toast = document.getElementById(prefix + 'copied-toast');
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2000);
+  });
+}
+
+async function generateFollowUp() {
+  const last = variants[currentVariant];
+  if (!last) { alert('Generate a message first, then create a follow-up.'); return; }
+  const btn = event.target;
+  btn.disabled = true; btn.textContent = 'Writing follow-up...';
+
+  const prompt = `Write a short, polite follow-up message to send 3 days after this original outreach received no reply:
+
+"${last}"
+
+Keep it under 60 words. Reference the original message briefly. Be curious, not pushy. End with a simple yes/no question.`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 300,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const data = await res.json();
+    const followup = data.content?.[0]?.text?.trim() || '';
+    variants[currentVariant] = followup;
+    renderOutput(followup, true);
+  } catch(e) {}
+
+  btn.disabled = false; btn.textContent = 'Generate follow-up →';
+}
+
+// ── FAQ ──
+function toggleFaq(btn) {
+  const answer = btn.nextElementSibling;
+  const isOpen = answer.classList.contains('open');
+  document.querySelectorAll('.faq-a').forEach(a => a.classList.remove('open'));
+  document.querySelectorAll('.faq-q').forEach(q => q.classList.remove('open'));
+  if (!isOpen) { answer.classList.add('open'); btn.classList.add('open'); }
+}
+</script>
+</body>
+</html>
